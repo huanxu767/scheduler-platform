@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>新增任务</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <link href="css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<!--<div class="row wrapper border-bottom white-bg page-heading">-->
+    <!--<div class="col-lg-10">-->
+        <!--<h2>Basic Form</h2>-->
+        <!--<ol class="breadcrumb">-->
+            <!--<li>-->
+                <!--<a href="index.html">Home</a>-->
+            <!--</li>-->
+            <!--<li>-->
+                <!--<a>Forms</a>-->
+            <!--</li>-->
+            <!--<li class="active">-->
+                <!--<strong>Basic Form</strong>-->
+            <!--</li>-->
+        <!--</ol>-->
+    <!--</div>-->
+    <!--<div class="col-lg-2">-->
+
+    <!--</div>-->
+<!--</div>-->
+
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>新增任务 <small>With custom checbox and radion elements.</small></h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-wrench"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#">Config option 1</a>
+                        </li>
+                        <li><a href="#">Config option 2</a>
+                        </li>
+                    </ul>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <form method="get" class="form-horizontal">
+                    <div class="form-group"><label class="col-sm-2 control-label">名称</label>
+                        <div class="col-sm-10"><input type="text" class="form-control"></div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group"><label class="col-sm-2 control-label">功能描述</label>
+                        <div class="col-sm-10"><input type="text" class="form-control"></div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group"><label class="col-sm-2 control-label">Cron表达式</label>
+                        <div class="col-sm-10"><input type="text" class="form-control"></div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group"><label class="col-sm-2 control-label">URL</label>
+                        <div class="col-sm-10"><input type="text" class="form-control"></div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group"><label class="col-sm-2 control-label">描述</label>
+                        <div class="col-sm-10"><input type="text" class="form-control"></div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">调用类型</label>
+                        <div class="col-sm-10">
+                            <div class="i-checks"><label> <input type="radio" value="option1" name="a" checked=""> <i></i> 静态方法 </label></div>
+                            <div class="i-checks"><label> <input type="radio"  value="option2" name="a"> <i></i> SpringBean </label></div>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group"><label class="col-sm-2 control-label">类名</label>
+                        <div class="col-sm-10"><input type="text" class="form-control"></div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group"><label class="col-sm-2 control-label">方法名</label>
+                        <div class="col-sm-10"><input type="text" class="form-control"></div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <!--<div class="form-group">-->
+                        <!--<label class="col-sm-2 control-label"></label>-->
+                        <!--<div class="col-sm-2">-->
+                            <!--<button type="button" class="btn btn-outline btn-primary">添加</button>-->
+                            <!--<button type="button" class="btn btn-outline btn-danger">删除</button>-->
+                        <!--</div>-->
+                    <!--</div>-->
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">参数（字符串类型）</label>
+                        <div class="col-sm-10">
+
+                            <div class="row">
+                                <div class="col-md-4"><button type="button" class="btn btn-outline btn-sm btn-primary">添加</button> <button type="button" class="btn btn-outline  btn-sm btn-danger">删除</button> </div>
+                            </div>
+                            <div class="row space-15 ">
+                                <div class="col-md-4"><input type="text" placeholder="参数名" class="form-control"></div>
+                                <div class="col-md-4"><input type="text" placeholder="参数值" class="form-control"></div>
+                            </div>
+
+                            <div class="row space-15 ">
+                                <div class="col-md-4"><input type="text" placeholder="参数名" class="form-control"></div>
+                                <div class="col-md-4"><input type="text" placeholder="参数值" class="form-control"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <div class="col-sm-4 col-sm-offset-2">
+                            <button class="btn btn-white" type="submit">取消</button>
+                            <button class="btn btn-primary" type="submit">提交</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Mainly scripts -->
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="js/inspinia.js"></script>
+    <script src="js/plugins/pace/pace.min.js"></script>
+
+    <!-- iCheck -->
+    <script src="js/plugins/iCheck/icheck.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('.i-checks').iCheck({
+                    checkboxClass: 'icheckbox_square-green',
+                    radioClass: 'iradio_square-green',
+                });
+            });
+        </script>
+</body>
+
+</html>

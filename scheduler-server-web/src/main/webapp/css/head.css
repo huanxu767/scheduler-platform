@@ -1,0 +1,26 @@
+.head-top {
+    background-color: #1d2731;
+    height: 72px;
+    left: 0;
+    /* position: relative; */
+    width: 100%;
+    top: 0;
+    position: fixed;
+    background: url(../img/head.png);
+}
+
+.head-top .logo {
+    line-height: 72px;
+    text-align: center;
+    float: left;
+    height: 72px;
+    left: 0;
+    width: 180px;
+    background: #56b1de;
+}
+
+.head-title {
+    color: #ffffff;
+    font-size: 25px;
+    letter-spacing: 5px;
+}
