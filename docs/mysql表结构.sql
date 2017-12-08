@@ -7,7 +7,7 @@ CREATE TABLE SCHEDULE_JOB
   sync            VARCHAR(1) DEFAULT 1,
   url             VARCHAR(512),
   job_type        VARCHAR(1),
-  create_time     timestamp,
+  create_time     timestamp DEFAULT CURRENT_TIMESTAMP,
   update_time     timestamp,
   status          INT(1) DEFAULT 1,
   job_desc        VARCHAR(256),
@@ -23,8 +23,6 @@ create table SCHEDULE_JOB_PARAMS
   type            VARCHAR(64),
   value           VARCHAR(128)
 );
-
-
 create table SCHEDULE_LOG
 (
   job_name         VARCHAR(16),
@@ -34,9 +32,9 @@ create table SCHEDULE_LOG
   status           CHAR(1),
   node_name        VARCHAR(120),
   error_message    VARCHAR(120),
-  create_time      timestamp,
+  create_time      timestamp DEFAULT CURRENT_TIMESTAMP,
   end_time         timestamp,
-  trigger_type     timestamp(1)
+  trigger_type     CHAR(1)
 ) ENGINE=INNODB  DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 

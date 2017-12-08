@@ -6,14 +6,17 @@ import com.sncfc.scheduler.server.pojo.ScheduleJob;
 import com.sncfc.scheduler.server.pojo.ScheduleJobParams;
 import com.sncfc.scheduler.server.pojo.ScheduleLog;
 import com.sncfc.scheduler.server.util.BaseJdbcDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 /**
@@ -22,13 +25,28 @@ import java.util.*;
 @Repository(value = "scheduleJobDao")
 public class ScheduleJobDaoImpl extends BaseJdbcDAO implements IScheduleJobDao {
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
     @Override
     public Long insertScheduleJob(final ScheduleJob job) {
-        String seqSql = "SELECT SEQ_SCHEDULE_JOB.NEXTVAL FROM DUAL";
-        Long id = queryForObject(seqSql, Long.class);
-        String sql = "INSERT INTO SCHEDULE_JOB(SCHEDULE_JOB_ID, PROJECT_ID, JOB_ALIAS_NAME,CRON_EXPRESSION,SYNC,URL, JOB_TYPE,JOB_DESC,CLASS_NAME,METHOD_NAME,CREATE_TIME) VALUES(?,?, ?, ?, ?,?, ?, ?,?,?, SYSDATE)";
-        update(sql, new Object[]{id, job.getProjectId(), job.getJobAliasName(), job.getCronExpression(), job.getSync(), job.getUrl(), job.getJobType(), job.getJobDesc(), job.getClassName(), job.getMethodName()});
-        return id;
+        final String sql = "INSERT INTO SCHEDULE_JOB(PROJECT_ID, JOB_ALIAS_NAME,CRON_EXPRESSION,SYNC,URL, JOB_TYPE,JOB_DESC,CLASS_NAME,METHOD_NAME) VALUES(?, ?, ?, ?,?, ?, ?,?,?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
+                PreparedStatement ps = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+                ps.setLong(1,job.getProjectId());
+                ps.setString(2,job.getJobAliasName());
+                ps.setString(3,job.getCronExpression());
+                ps.setString(4,job.getSync());
+                ps.setString(5,job.getUrl());
+                ps.setString(6,job.getJobType());
+                ps.setString(7,job.getJobDesc());
+                ps.setString(8,job.getClassName());
+                ps.setString(9,job.getMethodName());
+                return ps;
+            }
+        }, keyHolder);
+        return keyHolder.getKey().longValue();
     }
 
     @Override
@@ -67,7 +85,7 @@ public class ScheduleJobDaoImpl extends BaseJdbcDAO implements IScheduleJobDao {
 
     @Override
     public int updateJob(ScheduleJob scheduleJob) {
-        String sql = "UPDATE SCHEDULE_JOB SET PROJECT_ID = ?, JOB_ALIAS_NAME = ?,CRON_EXPRESSION = ?,URL = ?, JOB_TYPE = ?,JOB_DESC = ?,CLASS_NAME = ?,METHOD_NAME = ?,UPDATE_TIME=sysdate WHERE SCHEDULE_JOB_ID = ?";
+        String sql = "UPDATE SCHEDULE_JOB SET PROJECT_ID = ?, JOB_ALIAS_NAME = ?,CRON_EXPRESSION = ?,URL = ?, JOB_TYPE = ?,JOB_DESC = ?,CLASS_NAME = ?,METHOD_NAME = ?,UPDATE_TIME=now() WHERE SCHEDULE_JOB_ID = ?";
         return update(sql, new Object[]{scheduleJob.getProjectId(), scheduleJob.getJobAliasName(),
                 scheduleJob.getCronExpression(), scheduleJob.getUrl(), scheduleJob.getJobType(),
                 scheduleJob.getJobDesc(), scheduleJob.getClassName(), scheduleJob.getMethodName(), scheduleJob.getScheduleJobId()});
@@ -76,8 +94,8 @@ public class ScheduleJobDaoImpl extends BaseJdbcDAO implements IScheduleJobDao {
     @Override
     public int insertScheduleLog(ScheduleLog scheduleLog) {
         final String sql = "INSERT INTO schedule_log" +
-                " (JOB_NAME,JOB_GROUP,FIRE_INSTANCE_ID,STATUS,SUCCESS,NODE_NAME,ERROR_MESSAGE,TRIGGER_TYPE,CREATE_TIME) " +
-                " VALUES(?, ?, ?, ?, ?, ?, ?,?,SYSDATE)";
+                " ( JOB_NAME,JOB_GROUP,FIRE_INSTANCE_ID,STATUS,SUCCESS,NODE_NAME,ERROR_MESSAGE,TRIGGER_TYPE) " +
+                " VALUES(?, ?, ?, ?, ?, ?, ?,?)";
         return update(sql, new Object[]{scheduleLog.getJobName(), scheduleLog.getJobGroup(), scheduleLog.getFireInstanceId(),scheduleLog.getStatus(), scheduleLog.getSuccess(), scheduleLog.getNodeName(),scheduleLog.getErrorMessage(),scheduleLog.getTriggerType()});
     }
 
@@ -91,7 +109,7 @@ public class ScheduleJobDaoImpl extends BaseJdbcDAO implements IScheduleJobDao {
     @Override
     public void updateLogStatus(String fireInstanceId, boolean executed,String errorMsg) {
         String sql = "UPDATE SCHEDULE_LOG SET STATUS = ?  WHERE FIRE_INSTANCE_ID = ? ";
-        String completeSql = "UPDATE SCHEDULE_LOG SET  SUCCESS = ?,  STATUS = ?,ERROR_MESSAGE = ? ,END_TIME = SYSDATE  WHERE FIRE_INSTANCE_ID = ?";
+        String completeSql = "UPDATE SCHEDULE_LOG SET  SUCCESS = ?,  STATUS = ?,ERROR_MESSAGE = ? ,END_TIME = now()  WHERE FIRE_INSTANCE_ID = ?";
         if (executed) {
             //任务完成
             if(StringUtils.isEmpty(errorMsg)){
@@ -138,7 +156,7 @@ public class ScheduleJobDaoImpl extends BaseJdbcDAO implements IScheduleJobDao {
         StringBuffer sql = new StringBuffer();
         List params = new ArrayList();
         sql.append(" SELECT S.SCHEDULE_JOB_ID,S.PROJECT_ID,S.JOB_ALIAS_NAME,S.CRON_EXPRESSION,S.SYNC,S.URL,S.JOB_TYPE,");
-        sql.append(" TO_CHAR(S.CREATE_TIME,'YYYY/MM/DD HH:MM') CREATE_TIME,S.STATUS,S.JOB_DESC,S.CLASS_NAME,S.METHOD_NAME,P.PROJECT_NAME");
+        sql.append(" DATE_FORMAT(S.CREATE_TIME,'YYYY/MM/DD HH:MM') CREATE_TIME,S.STATUS,S.JOB_DESC,S.CLASS_NAME,S.METHOD_NAME,P.PROJECT_NAME");
         sql.append(" FROM SCHEDULE_JOB S  ");
         sql.append(" LEFT JOIN SCHEDULE_PROJECT P ON S.PROJECT_ID = P.PROJECT_ID WHERE S.STATUS <> 0  ");
         if(!StringUtils.isEmpty(paramsMap.get("projectId"))){
@@ -177,8 +195,8 @@ public class ScheduleJobDaoImpl extends BaseJdbcDAO implements IScheduleJobDao {
     @Override
     public List countTriggersList(int days) {
         String sql = "SELECT * FROM ( SELECT CREATE_DAY ,COUNT(*) COUNTS" +
-                "    FROM (SELECT TO_CHAR(CREATE_TIME,'YYYY-MM-DD') CREATE_DAY" +
-                "    FROM SCHEDULE_LOG ) GROUP BY CREATE_DAY ORDER BY CREATE_DAY DESC) WHERE ROWNUM <= ?";
+                "    FROM (SELECT DATE_FORMAT(CREATE_TIME,'YYYY-MM-DD') CREATE_DAY" +
+                "    FROM SCHEDULE_LOG ) a GROUP BY CREATE_DAY ORDER BY CREATE_DAY DESC) b  limit ?";
         return queryForList(sql,new Object[]{days});
     }
 
@@ -211,8 +229,9 @@ public class ScheduleJobDaoImpl extends BaseJdbcDAO implements IScheduleJobDao {
     public Map countTriggers(int days) {
         String sql = "SELECT SUM(TOTALS) COUNTS,SUM(SUCESS_COUNTS) SUCESS_COUNTS,SUM(FAILURE_COUNTS) FAILURE_COUNTS" +
                 "    FROM ( SELECT CREATE_DAY,SUM(SUCESS_NUM) SUCESS_COUNTS,SUM(FAILURE_COUNTS) FAILURE_COUNTS,COUNT(*) TOTALS" +
-                "    FROM (SELECT TO_CHAR(CREATE_TIME,'YYYY-MM-DD') CREATE_DAY,(CASE SUCCESS WHEN '3' THEN 1 ELSE 0 END ) SUCESS_NUM ,(CASE SUCCESS WHEN '2' THEN 1  WHEN '4' THEN 1 ELSE 0 END)  FAILURE_COUNTS FROM SCHEDULE_LOG )" +
-                " GROUP BY CREATE_DAY ORDER BY CREATE_DAY DESC ) WHERE ROWNUM <= ?";
+                "    FROM (SELECT DATE_FORMAT(CREATE_TIME,'YYYY-MM-DD') CREATE_DAY,(CASE SUCCESS WHEN '3' THEN 1 ELSE 0 END ) SUCESS_NUM ," +
+                "   (CASE SUCCESS WHEN '2' THEN 1  WHEN '4' THEN 1 ELSE 0 END)  FAILURE_COUNTS FROM SCHEDULE_LOG ) a " +
+                " GROUP BY CREATE_DAY ORDER BY CREATE_DAY DESC ) b  limit ?";
         return queryForMap(sql,new Object[]{days});
     }
 

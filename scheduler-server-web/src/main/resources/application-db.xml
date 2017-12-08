@@ -35,7 +35,7 @@
 
 
 	<!-- JNDI数据源 -->
-    <jee:jndi-lookup id="dataSource" jndi-name="jdbc/sncfc-db-pomDS_oracle" proxy-interface="javax.sql.DataSource" lookup-on-startup="false"/>
+    <jee:jndi-lookup id="dataSource" jndi-name="jdbc/huabocrawler" proxy-interface="javax.sql.DataSource" lookup-on-startup="false"/>
     <!-- *********事物管理************** -->
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />

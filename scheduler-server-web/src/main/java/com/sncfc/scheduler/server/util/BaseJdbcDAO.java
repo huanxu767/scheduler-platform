@@ -169,7 +169,7 @@ public abstract class BaseJdbcDAO extends JdbcDaoSupport {
 	 * @return
 	 */
 	public List<Long> querySequenceNextValues(String sequenceName, final int size){
-		return this.getJdbcTemplate().query(String.format("select %s.nextval from dual connect by rownum <= ?", sequenceName), new Object[]{size}, new RowMapper(){
+		return this.getJdbcTemplate().query(String.format("select %s.nextval from dual connect by limit ?", sequenceName), new Object[]{size}, new RowMapper(){
 			public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
 				return rs.getLong(1);
 			}
@@ -223,14 +223,27 @@ public abstract class BaseJdbcDAO extends JdbcDaoSupport {
 	public String getLimitSql(String sql, int currentPage, int pageSize) {
 		Assert.isTrue(currentPage > 0, "'currentPage' 不能为负数!");
 		Assert.isTrue(pageSize > 0, "'pageSize' 不能为负数!");
-		String s = "select *"
-				  + " from (select rownum rn_, inner_tab.*"
-				  		  + " from (" + sql + ") inner_tab"
-				  		 + " where rownum <= " + (currentPage * pageSize) + ") outer_tab"
-			      + " where outer_tab.rn_ > " + ((currentPage - 1) * pageSize);
+		String s = sql +" LIMIT " + ((currentPage - 1) * pageSize) + "," + (currentPage * pageSize);
 		return s;
 	}
-	
+
+	/**
+	 * 获取分页sql语句
+	 * @param sql
+	 * @param currentPage
+	 * @param pageSize
+	 * @return
+	 */
+	public String getLimitSqlOracle(String sql, int currentPage, int pageSize) {
+		Assert.isTrue(currentPage > 0, "'currentPage' 不能为负数!");
+		Assert.isTrue(pageSize > 0, "'pageSize' 不能为负数!");
+		String s = "select *"
+				+ " from (select rownum rn_, inner_tab.*"
+				+ " from (" + sql + ") inner_tab"
+				+ " where rownum <= " + (currentPage * pageSize) + ") outer_tab"
+				+ " where outer_tab.rn_ > " + ((currentPage - 1) * pageSize);
+		return s;
+	}
 	/**
 	 * 获取总记录数sql语句
 	 * @param sql
