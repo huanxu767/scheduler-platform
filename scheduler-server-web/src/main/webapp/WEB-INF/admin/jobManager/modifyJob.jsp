@@ -49,7 +49,7 @@
 
                     <div class="form-group"><label class="col-sm-2 control-label">URL</label>
                         <div class="col-sm-10">
-                            <div class="input-group m-b"><span class="input-group-addon">http://</span> <input type="text" name="url" class="form-control" value="${scheduleJob.url}"></div>
+                           <input type="text" name="url" class="form-control" value="${scheduleJob.url}" />
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>

@@ -76,7 +76,7 @@
                     <div class="form-group"><label class="col-sm-2 control-label">URL</label>
                         <div class="col-sm-10">
                             <div class="input-group">
-                                <p class="form-control-static">http://${scheduleJob.url}</p>
+                                <p class="form-control-static">${scheduleJob.url}</p>
                             </div>
                         </div>
                     </div>
