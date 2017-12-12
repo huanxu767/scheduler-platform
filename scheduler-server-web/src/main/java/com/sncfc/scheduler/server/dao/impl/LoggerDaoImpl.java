@@ -39,7 +39,7 @@ public class LoggerDaoImpl extends BaseJdbcDAO implements ILoggerDao {
         StringBuffer sql = new StringBuffer();
         List params = new ArrayList();
         sql.append(" SELECT S.JOB_NAME,S.JOB_GROUP,S.SUCCESS,S.STATUS,S.NODE_NAME,S.ERROR_MESSAGE,");
-        sql.append(" DATE_FORMAT(S.CREATE_TIME,'YYYY-MM-DD HH24:MI:SS') CREATE_TIME,DATE_FORMAT(S.END_TIME,'YYYY-MM-DD HH24:MI:SS') END_TIME,P.PROJECT_NAME,B.JOB_ALIAS_NAME");
+        sql.append(" DATE_FORMAT(S.CREATE_TIME,'%Y-%m-%d %H:%I:%S') CREATE_TIME,DATE_FORMAT(S.END_TIME,'%Y-%m-%d %H:%I:%S') END_TIME,P.PROJECT_NAME,B.JOB_ALIAS_NAME");
         sql.append(" FROM SCHEDULE_LOG S,SCHEDULE_PROJECT P ,SCHEDULE_JOB B  ");
         sql.append(" WHERE S.JOB_GROUP = P.PROJECT_ID AND S.JOB_NAME = B.SCHEDULE_JOB_ID AND B.STATUS <> 0 ");
         if(!StringUtils.isEmpty(paramsMap.get("projectId"))){

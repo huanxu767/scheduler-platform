@@ -70,7 +70,7 @@ public class AsyncJobFactory extends QuartzJobBean {
         //插入执行记录
         scheduleJobService.addScheduleLog(scheduleLog);
         try {
-            responseMap = new HttpClientUtil("http://"+scheduleJob.getUrl()).sendReq(map);
+            responseMap = new HttpClientUtil(scheduleJob.getUrl()).sendReq(map);
             logger.info("responseMap:"+responseMap);
             if(responseMap == null){
                 scheduleLog.setSuccess(ScheduleLog.TRIGGER_FAILURE);
